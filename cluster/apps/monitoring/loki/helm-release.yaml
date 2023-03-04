@@ -148,6 +148,10 @@ spec:
           installOperator: false
       lokiCanary:
         enabled: false
+      rules:
+        enabled: false
+      alerts:
+        enabled: false
   valuesFrom:
     - targetPath: loki.structuredConfig.common.storage.s3.bucketnames
       kind: Secret
