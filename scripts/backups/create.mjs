@@ -40,11 +40,11 @@ spec:
 
 let namespace;
 
-namespace = "home";
-backupCode("apps/home/esphome/backup.yaml", "esphome", namespace, "esphome-pvc")
-backupCode("apps/home/home-assistant/backup.yaml", "home-assistant", namespace, "home-assistant-pvc")
-backupCode("apps/home/nodered/backup.yaml", "nodered", namespace, "node-red-config-v1")
-backupCode("apps/home/zigbee2mqtt/backup.yaml", "zigbee2mqtt", namespace, "zigbee2mqtt-pvc", "Snapshot")
+// namespace = "home";
+// backupCode("apps/home/esphome/backup.yaml", "esphome", namespace, "esphome-pvc")
+// backupCode("apps/home/home-assistant/backup.yaml", "home-assistant", namespace, "home-assistant-pvc")
+// backupCode("apps/home/nodered/backup.yaml", "nodered", namespace, "node-red-config-v1")
+// backupCode("apps/home/zigbee2mqtt/backup.yaml", "zigbee2mqtt", namespace, "zigbee2mqtt-pvc", "Snapshot")
 
 namespace = "databases";
 backupCode("core/databases/postgres/pgdump/backup.yaml", "postgresql-dump", namespace, "postgres-cluster-dump")
