@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: loki
-      version: 4.6.1
+      version: 4.8.0
       sourceRef:
         kind: HelmRepository
         name: grafana-charts
@@ -102,27 +102,34 @@ spec:
       replicas: 3
       persistence:
         size: 10Gi
-        storageClass: database
+        storageClass: local-path
     read:
       replicas: 3
       extraVolumeMounts:
-        - name: loki-rules
-          mountPath: /rules/fake
-        - name: loki-rules-tmp
-          mountPath: /tmp/scratch
-        - name: loki-tmp
-          mountPath: /tmp/loki-tmp
+        - name: rules
+          mountPath: /rules
       extraVolumes:
-        - name: loki-rules
-          configMap:
-            name: loki-alerting-rules
-        - name: loki-rules-tmp
-          emptyDir: {}
-        - name: loki-tmp
+        - name: rules
           emptyDir: {}
       persistence:
         size: 10Gi
-        storageClass: database
+        storageClass: local-path
+    backend:
+      replicas: 3
+      persistence:
+        size: 10Gi
+        storageClass: local-path
+      extraVolumeMounts:
+        - name: rules
+          mountPath: /rules/fake
+        - name: scratch
+          mountPath: /tmp/scratch
+      extraVolumes:
+        - name: rules
+          configMap:
+            name: loki-alerting-rules
+        - name: scratch
+          emptyDir: {}
     gateway:
       enabled: true
       replicas: 3
