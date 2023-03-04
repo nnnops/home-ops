@@ -27,7 +27,7 @@ spec:
       namespace: monitoring
   values:
     image:
-      repository: timberio/vector
+      repository: ghcr.io/onedr0p/vector
       tag: 0.28.0-debian
     role: Agent
     customConfig:

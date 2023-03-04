@@ -106,7 +106,7 @@ spec:
           #   encoding:
           #     codec: json
     image:
-      repository: timberio/vector
+      repository: ghcr.io/onedr0p/vector
       tag: 0.28.0-debian
     role: Stateless-Aggregator
     replicas: 3
