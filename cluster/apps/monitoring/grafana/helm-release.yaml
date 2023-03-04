@@ -1,0 +1,182 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
+      chart: grafana
+      version: 6.49.0
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-charts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    replicas: 1
+    deploymentStrategy:
+      type: Recreate
+    env:
+      GF_EXPLORE_ENABLED: true
+      GF_PANELS_DISABLE_SANITIZE_HTML: true
+      GF_LOG_FILTERS: rendering:debug
+      GF_DATE_FORMATS_FULL_DATE: "MMM Do, YYYY hh:mm:ss a"
+      GF_SECURITY_ALLOW_EMBEDDING: true
+      GF_SECURTIY_COOKIE_SECURE: false
+      GF_SECURITY_COOKIE_SAMESITE: disabled
+    adminUser: ${SECRET_ADMIN_USER}
+    grafana.ini:
+      server:
+        root_url: "https://grafana.${SECRET_DOMAIN}"
+      paths:
+        data: /var/lib/grafana/data
+        logs: /var/log/grafana
+        plugins: /var/lib/grafana/plugins
+        provisioning: /etc/grafana/provisioning
+      analytics:
+        check_for_updates: false
+      log:
+        mode: console
+      grafana_net:
+        url: https://grafana.net
+      auth.basic:
+        disable_login_form: true
+      auth.proxy:
+        enabled: true
+        header_name: Remote-User
+      auth.anonymous:
+        enabled: true
+        org_role: Viewer
+    rbac:
+      pspEnabled: false
+    testFramework:
+      enabled: false
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: "default"
+            orgId: 1
+            folder: ""
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        # list of datasources that should be deleted from the database
+        deleteDatasources:
+          - name: Loki
+            orgId: 1
+          - name: Alertmanager
+            orgId: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            # url: http://prometheus-operated:9090/
+            url: http://vmselect-vmcluster:8481/select/0/prometheus/
+            isDefault: true
+          - name: Loki
+            type: loki
+            access: proxy
+            url: http://loki-gateway:80
+          - name: Alertmanager
+            type: alertmanager
+            access: proxy
+            url: http://alertmanager:9093
+            jsonData:
+              implementation: prometheus
+    dashboards:
+      default:
+        flux-cluster:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/v0.31.2/manifests/monitoring/monitoring-config/dashboards/cluster.json
+          datasource: Prometheus
+        flux-control-panel:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/v0.31.2/manifests/monitoring/monitoring-config/dashboards/control-plane.json
+          datasource: Prometheus
+        flux-logs:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/v0.31.2/manifests/monitoring/monitoring-config/dashboards/logs.json
+          datasource: Loki
+        # Ref: https://grafana.com/grafana/dashboards/13665
+        speedtest:
+          gnetId: 13665
+          revision: 1
+          datasource: Prometheus
+        mikrotik:
+          url: https://raw.githubusercontent.com/IgorKha/Grafana-Mikrotik/master/grafana/provisioning/dashboards/Mikrotik-snmp-prometheus.json
+          datasource: Prometheus
+        node-exporter-full:
+          datasource: Prometheus
+          gnetId: 1860
+          revision: 29
+        cloudnative-pg:
+          datasource: Prometheus
+          url: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-dashboard.json
+        nginx-dashboard:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+          datasource: Prometheus
+        longhorn:
+          datasource: Prometheus
+          gnetId: 13032
+          revision: 6
+        openwrt:
+          datasource: Prometheus
+          gnetId: 11147
+          revision: 1
+    sidecar:
+      dashboards:
+        enabled: true
+        searchNamespace: ALL
+        folderAnnotation: grafana_folder
+        provider:
+          foldersFromFilesStructure: true
+      datasources:
+        enabled: true
+        searchNamespace: ALL
+    plugins:
+      - natel-discrete-panel
+      - pr0ps-trackmap-panel
+      - grafana-piechart-panel
+      - vonage-status-panel
+      - grafana-worldmap-panel
+      - grafana-clock-panel
+    serviceMonitor:
+      enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/auth-method: GET
+        nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local:80/api/verify
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}?rm=$request_method
+        nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+        nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+      hosts:
+        - "grafana.${SECRET_DOMAIN}"
+      tls:
+        - hosts:
+            - "grafana.${SECRET_DOMAIN}"
+          secretName: grafana-tls
+    persistence:
+      enabled: true
+      type: pvc
+      storageClassName: "longhorn"
+      size: 10Gi

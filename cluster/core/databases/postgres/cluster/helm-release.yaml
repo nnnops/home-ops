@@ -1,0 +1,75 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: postgres-cluster
+  namespace: &namespace databases
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: raw
+      version: v0.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: dysnix-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: minio
+      namespace: storage
+    - name: postgres
+      namespace: databases
+    - name: longhorn
+      namespace: longhorn-system
+  values:
+    resources:
+      - apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: postgres
+          namespace: *namespace
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:14.7
+          primaryUpdateStrategy: unsupervised
+          storage:
+            size: 50Gi
+            storageClass: local-path
+          superuserSecret:
+            name: postgres-superuser
+          monitoring:
+            enablePodMonitor: true
+          # bootstrap:
+          #   recovery:
+          #     source: &prevCluster postgres-v1
+          backup:
+            retentionPolicy: 30d
+            target: "prefer-standby"
+            barmanObjectStore: &barmanObjectStore
+              wal:
+                compression: bzip2
+                maxParallel: 8
+              destinationPath: s3://postgresql/
+              endpointURL: http://minio.storage.svc.cluster.local:9000
+              serverName: postgres-v2
+              s3Credentials:
+                accessKeyId:
+                  name: postgres-minio
+                  key: MINIO_ACCESS_KEY
+                secretAccessKey:
+                  name: postgres-minio
+                  key: MINIO_SECRET_KEY
+
+          # externalClusters:
+          #   - name: *prevCluster
+          #     barmanObjectStore: 
+          #       <<: *barmanObjectStore
+          #       serverName: *prevCluster
+

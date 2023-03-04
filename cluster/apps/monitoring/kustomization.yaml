@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- grafana/helm-release.yaml
+- kube-state-metrics/helm-release.yaml
+- node-exporter/helm-release.yaml
+- snmp-exporter/config-map.yaml
+- snmp-exporter/helm-release.yaml
+- speed-monitor/helm-release.yaml
+- alertmanager/helm-release.yaml
+- victoria-metrics
+- botkube/
+- vector/
+- uptime-kuma/
+- loki/

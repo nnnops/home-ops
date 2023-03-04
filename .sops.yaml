@@ -1,0 +1,9 @@
+---
+creation_rules:
+  # upon creation of a file that matches the pattern *.dev.yaml,
+  # KMS set A is used
+  - path_regex: \.enc.yaml$
+    encrypted_regex: ^(data|stringData)$
+    age: "age1ydepnmnqfu5au0rcv888flh6f9h8cxf2scyf8ddunemrw82kcstsv8ks5g"
+  - path_regex: (\.enc)?\.tfstate(\.backup)?$
+    age: "age1ydepnmnqfu5au0rcv888flh6f9h8cxf2scyf8ddunemrw82kcstsv8ks5g"

@@ -1,0 +1,21 @@
+
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: longhorn-charts
+  namespace: flux-system
+spec:
+  interval: 15m
+  url: https://charts.longhorn.io
+  timeout: 3m
+# apiVersion: source.toolkit.fluxcd.io/v1beta2
+# kind: GitRepository
+# metadata:
+#   name: longhorn-git-charts
+#   namespace: flux-system
+# spec:
+#   interval: 5m0s
+#   url: https://github.com/longhorn/longhorn
+#   ref:
+#     commit: 6de8c36fba29771e1cd7507a668c5a3148ed1314
