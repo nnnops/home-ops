@@ -39,7 +39,7 @@ spec:
     replicaCount: 3
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClass: local-path
       size: 1Gi
     config:
       global:
