@@ -29,7 +29,6 @@ spec:
           - ${SECRET_HOME_IP}
         externalTrafficPolicy: Local
         annotations:
-          metallb.universe.tf/address-pool: "home-network"
           external-dns.alpha.kubernetes.io/hostname: ${SECRET_DOMAIN}
 
       publishService:

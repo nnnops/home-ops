@@ -28,9 +28,6 @@ spec:
       externalTrafficPolicy: Cluster
       loadBalancerIP: ${SVC_COREDNS_ADDR}
       clusterIP: 10.43.0.10 # default coreDNS IP for k3s
-      annotations:
-        metallb.universe.tf/allow-shared-ip: coredns
-        metallb.universe.tf/address-pool: "home-network"
     rbac:
       create: true
     isClusterService: true

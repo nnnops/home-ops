@@ -22,9 +22,6 @@ spec:
   upgrade:
     remediation:
       retries: 5
-  dependsOn:
-    - name: metallb
-      namespace: kube-system
   values:
     fullnameOverride: k8s-gateway
     domain: ${SECRET_DOMAIN}
@@ -32,8 +29,7 @@ spec:
     service:
       type: LoadBalancer
       port: 53
-      annotations:
-        metallb.universe.tf/loadBalancerIPs: "${SVC_K8S_GATEWAY_ADDR}"
+      loadBalancerIP: "${SVC_K8S_GATEWAY_ADDR}"
       externalTrafficPolicy: Local
     resources:
       requests:

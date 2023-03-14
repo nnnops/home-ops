@@ -10,7 +10,6 @@ resources:
 - intel-gpu-plugin
 - k8s-gateway/helm-release.yaml
 - longhorn
-- metallb
 - minio
 - node-feature-discovery/helm-release.yaml
 - volsync

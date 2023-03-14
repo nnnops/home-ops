@@ -28,7 +28,6 @@ resources:
   - kubernetes-sigs-nfd-charts.yaml
   - kyverno-charts.yaml
   - longhorn-charts.yaml
-  - metallb-charts.yaml
   - project-calico-charts.yaml
   - prometheus-community-charts.yaml
   - rook-ceph-charts.yaml
