@@ -29,26 +29,6 @@ spec:
   values:
     resources:
       - apiVersion: metallb.io/v1beta1
-        kind: BGPAdvertisement
-        metadata:
-          name: bgp-lb
-          namespace: kube-system
-        spec:
-          ipAddressPools:
-            - home-network
-          peers:
-            - mikrotik
-      - apiVersion: metallb.io/v1beta2
-        kind: BGPPeer
-        metadata:
-          name: mikrotik
-          namespace: kube-system
-        spec:
-          peerAddress: ${SECRET_GATEWAY_IP}
-          peerASN: 65530
-          myASN: 64512
-          holdTime: 1m30s
-      - apiVersion: metallb.io/v1beta1
         kind: IPAddressPool
         metadata:
           name: external-ip
