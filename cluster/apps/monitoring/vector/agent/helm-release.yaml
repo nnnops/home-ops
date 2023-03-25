@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/vector
-      tag: 0.28.0-debian
+      tag: 0.28.0-alpine
     role: Agent
     customConfig:
       data_dir: /vector-data-dir
