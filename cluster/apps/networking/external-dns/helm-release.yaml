@@ -30,9 +30,11 @@ spec:
       proxied: true
     policy: sync
     domainFilters:
-      - "${SECRET_INGRESS_DOMAIN}"
+      - "${SECRET_DOMAIN}"
+      - "${SECRET_DOMAIN_OUTSIDE}"
     zoneIdFilters:
       - "${SECRET_INGRESS_ZONE_ID}"
+      - "${SECRET_DOMAIN_OUTSIDE_ZONE_ID}"
     crd:
       create: true
     txtPrefix: "k8s."
