@@ -27,7 +27,7 @@ spec:
         loadBalancerIP: "${SVC_INGRESS_ADDR}"
         # externalIPs:
         #   - ${SECRET_HOME_IP}
-        externalTrafficPolicy: Local
+        externalTrafficPolicy: Cluster
         annotations:
           external-dns.alpha.kubernetes.io/hostname: ${SECRET_DOMAIN}
 
