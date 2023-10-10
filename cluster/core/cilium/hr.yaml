@@ -4,7 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: cilium
-  namespace: cilium
+  namespace: kube-system
 spec:
   chart:
     spec:
@@ -24,12 +24,20 @@ spec:
       bbr: true
     bpf:
       masquerade: true
-    bgp:
-      enabled: false
     cluster:
       name: kubernetes
       id: 1
-    
+
+    # choose between bgp or l2announcements
+    bgpControlPlane:
+      enabled: true
+    l2announcements:
+      enabled: false
+      # enabled: true
+      # leaseDuration: 120s
+      # leaseRenewDeadline: 60s
+      # leaseRetryPeriod: 1s
+
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock
@@ -47,11 +55,13 @@ spec:
         annotations: {}
 
       relay:
+        enabled: true
         prometheus:
           serviceMonitor:
             enabled: true
 
       ui:
+        enabled: true
         ingress:
           enabled: true
           className: "nginx"
@@ -69,16 +79,12 @@ spec:
                 - *host
     ipam:
       mode: kubernetes
-    ipv4NativeRoutingCIDR: 10.32.0.0/16
+    ipv4NativeRoutingCIDR: ${NET_POD_CIDR}
     k8sServiceHost: ${SVC_K8S_ADDR}
     k8sServicePort: 6443
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
-    l2announcements:
-      enabled: true
-      leaseDuration: 120s
-      leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
+
     loadBalancer:
       algorithm: maglev
       mode: dsr
@@ -106,4 +112,3 @@ spec:
     securityContext:
       privileged: true
     tunnel: disabled
-    
