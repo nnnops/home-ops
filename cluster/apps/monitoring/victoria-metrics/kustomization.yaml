@@ -5,5 +5,4 @@ resources:
 - vm-agent.yaml
 - vm-alert.yaml
 - vm-alertmanager.yaml
-- vm-cluster.yaml
 - vm-single.yaml

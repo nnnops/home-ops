@@ -91,12 +91,8 @@ spec:
             type: prometheus
             access: proxy
             # url: http://prometheus-operated:9090/
-            url: http://vmselect-vmcluster:8481/select/0/prometheus/
+            url: http://vmsingle-vmsingle:8429/select/0/prometheus/
             isDefault: true
-          - name: Loki
-            type: loki
-            access: proxy
-            url: http://loki-gateway:80
           - name: Alertmanager
             type: alertmanager
             access: proxy
