@@ -7,8 +7,7 @@ spec:
   # Add fields here
   retentionPeriod: "4"
   storage:
-    spec:
-      storageClassName: longhorn
-      resources:
-        requests:
-          storage: 30Gi
+    storageClassName: longhorn
+    resources:
+      requests:
+        storage: 30Gi
