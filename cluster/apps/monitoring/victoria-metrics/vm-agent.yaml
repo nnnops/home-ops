@@ -22,7 +22,7 @@ spec:
       cpu: "300m"
       memory: "2Gi"
   remoteWrite:
-    - url: "http://vmsingle-vmsingle:8429/insert/0/prometheus"
+    - url: "http://vmsingle-vmsingle:8429/"
   inlineScrapeConfig: |
     - job_name: vmagent
       static_configs:

@@ -6,12 +6,12 @@ metadata:
 spec:
   replicaCount: 1
   datasource:
-    url: "http://vmsingle-vmsingle:8429/select/0/prometheus/"
+    url: "http://vmsingle-vmsingle:8429/prometheus/"
   notifier:
     url: "http://alertmanager.monitoring.svc:9093"
   remoteWrite:
-    url: "http://vmsingle-vmsingle:8429/insert/0/prometheus/"
+    url: "http://vmsingle-vmsingle:8429/"
   remoteRead:
-    url: "http://vmsingle-vmsingle:8429/select/0/prometheus/"
+    url: "http://vmsingle-vmsingle:8429/prometheus/"
   evaluationInterval: "30s"
   selectAllByDefault: true

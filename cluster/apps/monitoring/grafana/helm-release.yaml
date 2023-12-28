@@ -91,7 +91,7 @@ spec:
             type: prometheus
             access: proxy
             # url: http://prometheus-operated:9090/
-            url: http://vmsingle-vmsingle:8429/select/0/prometheus/
+            url: http://vmsingle-vmsingle:8429/prometheus/
             isDefault: true
           - name: Alertmanager
             type: alertmanager
