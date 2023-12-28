@@ -55,6 +55,7 @@ spec:
         tls:
           - hosts:
               - logs.${SECRET_DOMAIN}
+            secretName: "vmlogs-certs"
 
       service:
         enabled: true
