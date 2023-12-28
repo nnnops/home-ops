@@ -7,9 +7,8 @@ spec:
   # Add fields here
   retentionPeriod: "4"
   storage:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: longhorn
-        resources:
-         requests:
+    spec:
+      storageClassName: longhorn
+      resources:
+        requests:
           storage: 30Gi
