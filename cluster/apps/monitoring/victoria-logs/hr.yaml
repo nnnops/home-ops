@@ -49,12 +49,12 @@ spec:
           nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
           nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
         hosts:
-          - name: vmlogs.${SECRET_DOMAIN}
+          - name: logs.${SECRET_DOMAIN}
             path: /
             port: http
         tls:
           - hosts:
-              - vmlogs.${SECRET_DOMAIN}
+              - logs.${SECRET_DOMAIN}
 
       service:
         enabled: true
