@@ -29,20 +29,16 @@ spec:
     fullnameOverride: *app
     provider: cloudflare
     env:
-      - name: CF_API_EMAIL
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-creds
-            key: cloudflare_api_email
-      - name: CF_API_KEY
+      - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
             name: cloudflare-creds
             key: cloudflare_api_token
     extraArgs:
       - --cloudflare-proxied
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
+      # - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      # - --crd-source-kind=DNSEndpoint
+      - --zone-id-filter=${SECRET_INGRESS_ZONE_ID},${SECRET_DOMAIN_OUTSIDE_ZONE_ID}
     policy: sync
     sources: ["crd", "ingress"]
     txtOwnerId: homelab
