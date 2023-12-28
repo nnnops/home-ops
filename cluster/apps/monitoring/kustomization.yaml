@@ -12,3 +12,4 @@ resources:
 - uptime-kuma
 - vector
 - victoria-metrics
+- victoria-logs/hr.yaml

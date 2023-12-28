@@ -1,0 +1,130 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vm-logs
+  namespace: monitoring
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: victoria-logs-single
+      # renovate: registryUrl=https://victoriametrics.github.io/helm-charts chart=victoria-logs-single
+      version: 0.3.4
+      sourceRef:
+        kind: HelmRepository
+        name: victoria-metrics-charts
+        namespace: flux-system
+  values:
+    printNotes: true
+
+    server:
+      enabled: true
+      name: server
+      image:
+        repository: victoriametrics/victoria-logs
+        tag: "v0.4.2-victorialogs"
+        pullPolicy: IfNotPresent
+      extraArgs:
+        envflag.enable: "true"
+        envflag.prefix: VM_
+        loggerFormat: json
+
+      persistentVolume:
+        enabled: true
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: longhorn
+        existingClaim: ""
+        size: 40Gi
+
+      ingress:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://stupid-auth.security.svc.cluster.local:8000/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}/login?rd=$scheme://$best_http_host$request_uri 
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+        hosts:
+          - name: vmlogs.${SECRET_DOMAIN}
+            path: /
+            port: http
+        tls:
+          - hosts:
+              - vmlogs.${SECRET_DOMAIN}
+
+      service:
+        enabled: true
+        externalIPs: []
+        loadBalancerIP: ""
+        loadBalancerSourceRanges: []
+        servicePort: 9428
+        type: ClusterIP
+        externalTrafficPolicy: "local"
+
+      statefulSet:
+        enabled: true
+        podManagementPolicy: OrderedReady
+        service:
+          enabled: true
+          # -- Headless service annotations
+          annotations: {}
+          # -- Headless service labels
+          labels: {}
+          # -- Headless service port
+          servicePort: 9428
+          # Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+
+    fluent-bit:
+      enabled: true
+
+      daemonSetVolumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+
+      daemonSetVolumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+
+      resources: {}
+
+      config:
+        # -- Note that Host must be replaced to match your VictoriaLogs service name
+        # Default format is: {{release_name}}-victoria-logs-single-server
+        outputs: |
+          [OUTPUT]
+              Name http
+              Match kube.*
+              Host {{ .Release.Name }}-victoria-logs-single-server
+              port 9428
+              compress gzip
+              uri /insert/jsonline?_stream_fields=stream,kubernetes_pod_name&_msg_field=log&_time_field=date
+              format json_lines
+              json_date_format iso8601
+              header AccountID 0
+              header ProjectID 0
+        filters: |
+          [FILTER]
+              Name kubernetes
+              Match kube.*
+              Merge_Log On
+              Keep_Log On
+              K8S-Logging.Parser On
+              K8S-Logging.Exclude On
+          [FILTER]
+              Name                nest
+              Match               *
+              Wildcard            pod_name
+              Operation lift
+              Nested_under kubernetes
+              Add_prefix   kubernetes_
