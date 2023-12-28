@@ -8,6 +8,8 @@ spec:
   retentionPeriod: "4"
   storage:
     storageClassName: longhorn
+    accessModes: 
+      - ReadWriteOnce
     resources:
       requests:
         storage: 30Gi
