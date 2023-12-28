@@ -1,0 +1,15 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMSingle
+metadata:
+  name: vmsingle
+  namespace: monitoring
+spec:
+  # Add fields here
+  retentionPeriod: "4"
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: longhorn
+        resources:
+         requests:
+          storage: 30Gi

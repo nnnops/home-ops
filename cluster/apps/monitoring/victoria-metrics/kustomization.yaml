@@ -6,3 +6,4 @@ resources:
 - vm-alert.yaml
 - vm-alertmanager.yaml
 - vm-cluster.yaml
+- vm-single.yaml
