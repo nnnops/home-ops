@@ -2,44 +2,59 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: external-dns
+  name: &app external-dns
   namespace: networking
 spec:
   interval: 5m
   chart:
     spec:
       chart: external-dns
-      version: 6.12.2
+      version: 1.13.1
       sourceRef:
-
         kind: HelmRepository
-        name: bitnami-charts
+        name: external-dns-charts
         namespace: flux-system
       interval: 5m
   install:
     createNamespace: true
   values:
-    nameOverride: external-dns
-    sources:
-      - ingress
+    fullnameOverride: *app
     provider: cloudflare
-    interval: 5m
-    logLevel: debug
-    cloudflare:
-      secretName: cloudflare-creds
-      proxied: true
+    env:
+      - name: CF_API_EMAIL
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-creds
+            key: cloudflare_api_email
+      - name: CF_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-creds
+            key: cloudflare_api_token
+    extraArgs:
+      - --ingress-class=external
+      - --cloudflare-proxied
+      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      - --crd-source-kind=DNSEndpoint
     policy: sync
+    sources: ["crd", "ingress"]
+    txtOwnerId: homelab
+    txtPrefix: k8s.
     domainFilters:
       - "${SECRET_DOMAIN}"
       - "${SECRET_DOMAIN_OUTSIDE}"
-    zoneIdFilters:
-      - "${SECRET_INGRESS_ZONE_ID}"
-      - "${SECRET_DOMAIN_OUTSIDE_ZONE_ID}"
-    crd:
-      create: true
-    txtPrefix: "k8s."
-    # annotationFilter: "external-dns/is-public in (true)"
+    logLevel: info
+    serviceMonitor:
+      enabled: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: cloudflare-creds
     resources:
       requests:
-        memory: 100Mi
         cpu: 25m
+        memory: 50Mi
+      limits:
+        cpu: 50m
+        memory: 100Mi
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
