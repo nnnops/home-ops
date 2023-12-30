@@ -24,7 +24,7 @@ spec:
   values:
     image:
       repository: ghcr.io/whazor/stupid-auth
-      tag: 0.1.0
+      tag: 0.2.0
     env:
       TZ: ${TIMEZONE}
       AUTH_DOMAIN: ${SECRET_DOMAIN}
