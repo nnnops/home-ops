@@ -16,6 +16,19 @@ spec:
         name: prometheus-community-charts
         namespace: flux-system
   values:
+    fullnameOverride: kube-state-metrics
+    releaseLabel: false # disable for victoria-metrics
+    metricLabelsAllowlist:
+      - deployments=[*]
+      - persistentvolumeclaims=[*]
+      - pods=[*]
     prometheus:
       monitor:
         enabled: true
+        honorLabels: true
+        relabelings:
+          - action: replace
+            regex: ^(.*)$
+            replacement: $1
+            sourceLabels: ["__meta_kubernetes_pod_node_name"]
+            targetLabel: kubernetes_node
