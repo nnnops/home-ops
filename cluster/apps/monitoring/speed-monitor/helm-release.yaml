@@ -27,3 +27,8 @@ spec:
         scrapeTimeout: 1m
       prometheusRule:
         enabled: false
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 100Mi

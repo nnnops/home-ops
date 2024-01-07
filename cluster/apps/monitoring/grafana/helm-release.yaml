@@ -155,6 +155,12 @@ spec:
           url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
           datasource: Prometheus
     sidecar:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 100Mi
+        limits:
+          memory: 100Mi
       dashboards:
         enabled: true
         searchNamespace: ALL
@@ -173,6 +179,12 @@ spec:
       - grafana-clock-panel
     serviceMonitor:
       enabled: true
+    resources:
+      requests:
+        cpu: 23m
+        memory: 100Mi
+      limits:
+        memory: 219Mi
     ingress:
       enabled: true
       ingressClassName: "nginx"

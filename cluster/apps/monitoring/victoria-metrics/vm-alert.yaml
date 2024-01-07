@@ -13,5 +13,11 @@ spec:
     url: "http://vmsingle-vmsingle:8429/"
   remoteRead:
     url: "http://vmsingle-vmsingle:8429/prometheus/"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 50Mi
+    limits:
+      memory: 100Mi
   evaluationInterval: "30s"
   selectAllByDefault: true

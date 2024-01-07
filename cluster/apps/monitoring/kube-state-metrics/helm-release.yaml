@@ -18,6 +18,11 @@ spec:
   values:
     fullnameOverride: kube-state-metrics
     releaseLabel: false # disable for victoria-metrics
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 100Mi
     metricLabelsAllowlist:
       - deployments=[*]
       - persistentvolumeclaims=[*]

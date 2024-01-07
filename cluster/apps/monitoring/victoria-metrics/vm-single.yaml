@@ -6,6 +6,12 @@ metadata:
 spec:
   # Add fields here
   retentionPeriod: "4"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 100Mi
+    limits:
+      memory: 1360Mi
   storage:
     storageClassName: longhorn
     accessModes: 

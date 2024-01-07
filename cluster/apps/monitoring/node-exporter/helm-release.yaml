@@ -17,6 +17,11 @@ spec:
         namespace: flux-system
   values:
     nameOverride: node-exporter
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 100Mi
     prometheus:
       monitor:
         enabled: true

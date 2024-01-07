@@ -27,6 +27,11 @@ spec:
         configMap: snmp-exporter
         readOnly: true
         defaultMode: 420
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 100Mi
     serviceMonitor:
       enabled: true
       namespace: monitoring

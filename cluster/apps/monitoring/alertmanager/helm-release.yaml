@@ -37,6 +37,11 @@ spec:
         - hosts:
             - alert-manager.${SECRET_DOMAIN}
     replicaCount: 3
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 100Mi
     persistence:
       enabled: true
       storageClass: local-path
