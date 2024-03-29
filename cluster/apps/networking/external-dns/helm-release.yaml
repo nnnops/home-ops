@@ -44,7 +44,7 @@ spec:
       - --zone-id-filter=${SECRET_INGRESS_ZONE_ID}
       - --zone-id-filter=${SECRET_DOMAIN_OUTSIDE_ZONE_ID}
     policy: sync
-    sources: ["crd", "ingress"]
+    sources: ["ingress"]
     txtOwnerId: homelab
     txtPrefix: k8s.
     domainFilters:
