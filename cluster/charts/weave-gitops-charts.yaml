@@ -5,5 +5,7 @@ metadata:
   name: weave-gitops-charts
   namespace: flux-system
 spec:
-  interval: 1h
-  url: oci://ghcr.io/weaveworks/charts/
+  type: oci
+  interval: 30m
+  url: oci://ghcr.io/weaveworks/charts
+  timeout: 2m
