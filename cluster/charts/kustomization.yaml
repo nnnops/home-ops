@@ -20,6 +20,7 @@ resources:
   - grafana-charts.yaml
   - hajimari-charts.yaml
   - infracloudio-charts.yaml
+  - intel-charts.yaml
   - ingress-nginx-charts.yaml
   - jetstack.yaml
   - k8s-at-home.yaml
