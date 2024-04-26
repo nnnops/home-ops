@@ -85,7 +85,7 @@
 
             pkgs.terraform
             pkgs.jq
-            pkgs.ansible
+            # pkgs.ansible
 
             pkgs.nixfmt
 
