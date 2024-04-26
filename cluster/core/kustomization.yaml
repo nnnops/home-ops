@@ -12,5 +12,5 @@ resources:
   - k8s-gateway/helm-release.yaml
   - longhorn
   - minio
-  - node-feature-discovery/helm-release.yaml
+  - node-feature-discovery
   - volsync
