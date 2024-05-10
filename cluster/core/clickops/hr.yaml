@@ -59,6 +59,8 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
         pod:
+          imagePullSecrets:
+            - name: clickops-pull-secret
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
