@@ -68,6 +68,8 @@ spec:
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups: [1000]
+    serviceAccount:
+      name: clickops
     service:
       app:
         controller: *name

@@ -3,3 +3,6 @@ kind: Kustomization
 resources:
   - hr.yaml
   - pull-secret.enc.yaml
+  - role.yaml
+  - rolebinding.yaml
+  - sa.yaml
