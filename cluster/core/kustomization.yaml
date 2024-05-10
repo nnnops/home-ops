@@ -14,3 +14,4 @@ resources:
   - minio
   - node-feature-discovery
   - volsync
+  - clickops/hr.yaml

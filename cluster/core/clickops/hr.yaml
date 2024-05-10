@@ -1,0 +1,95 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &name clickops
+  namespace: kube-system
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      clickops:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/whazor/clickops
+              tag: main@sha256:677d26f59dab29b353a97ce92897148247f12b7dc875c705dee156e238db0b83
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 25m
+              limits:
+                memory: 259Mi
+            env:
+              TZ: "${TIMEZONE}"
+              # not used
+              __PORT: &port "3000"
+              __HOST: &host "clickops.${SECRET_DOMAIN}"
+            probes:
+              liveness: &probe
+                enabled: true          
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups: [1000]
+    service:
+      app:
+        controller: *name
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        hosts:
+          - host: *host
+            paths:
+            - path: /
+              service:
+                identifier: app
+                port: http
+        tls:
+          - secretName: clickops-tls
+            hosts:
+              - *host
+        annotations:
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://stupid-auth.security.svc.cluster.local:8000/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${SECRET_DOMAIN}/login?rd=$scheme://$best_http_host$request_uri 
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+          nginx.ingress.kubernetes.io/auth-snippet: proxy_set_header X-Forwarded-Method $request_method;
+          hajimari.io/enable: "true"
+          hajimari.io/icon: mouse
