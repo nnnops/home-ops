@@ -39,7 +39,7 @@ spec:
             env:
               TZ: "${TIMEZONE}"
               # not used
-              __PORT: &port "3000"
+              __PORT: &port 3000
               __HOST: &host "clickops.${SECRET_DOMAIN}"
             probes:
               liveness: &probe
