@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/whazor/clickops
-              tag: main@sha256:4ed42da59c514044f34824a574f84409fe9da948e7bc533b3a129ddc3634e43e
+              tag: main@sha256:39e9717cffa2f7f1cc6e17e11b2c9eccd41dc15fb335dac040a25da05cf005c0
             resources:
               requests:
                 memory: 100Mi
