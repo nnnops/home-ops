@@ -38,8 +38,8 @@ spec:
                 memory: 259Mi
             env:
               TZ: "${TIMEZONE}"
+              PORT: &port 3000
               # not used
-              __PORT: &port 3000
               __HOST: &host "clickops.${SECRET_DOMAIN}"
             probes:
               liveness: &probe
