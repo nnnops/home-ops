@@ -16,3 +16,7 @@ rules:
 - apiGroups: ["networking.k8s.io"]
   resources: ["ingresses"]
   verbs: ["get", "watch", "list"]
+# events
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["list"]
