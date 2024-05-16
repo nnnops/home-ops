@@ -85,10 +85,6 @@ spec:
               service:
                 identifier: app
                 port: http
-        tls:
-          - secretName: clickops-tls
-            hosts:
-              - *host
         annotations:
           nginx.ingress.kubernetes.io/auth-method: GET
           nginx.ingress.kubernetes.io/auth-url: http://stupid-auth.security.svc.cluster.local:8000/auth
