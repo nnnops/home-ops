@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/whazor/clickops
-              tag: v0.1.12
+              tag: v0.0.1@sha256:7c8e6f414306a8b4402dba3145a7ce525fdeedfa72f7c3d91de16aac0c7761d8
             resources:
               requests:
                 memory: 100Mi
@@ -59,8 +59,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
         pod:
-          imagePullSecrets:
-            - name: clickops-pull-secret
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
