@@ -19,11 +19,11 @@ spec:
 
   values:
     #autoDirectNodeRoutes: true
-    bandwidthManager:
-      enabled: true
-      bbr: true
-    bpf:
-      masquerade: true
+    #bandwidthManager:
+      #  enabled: true
+      #  bbr: true
+    #bpf:
+      #  masquerade: true
     cluster:
       name: kubernetes
       id: 1
@@ -77,8 +77,8 @@ spec:
           tls:
             - hosts:
                 - *host
-    ipam:
-      mode: kubernetes
+    #ipam:
+      #  mode: kubernetes
     ipv4NativeRoutingCIDR: ${NET_POD_CIDR}
     k8sServiceHost: ${SVC_K8S_ADDR}
     k8sServicePort: 6443
